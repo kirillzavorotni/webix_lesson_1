@@ -20,3 +20,48 @@
 .transparent_button.webix_el_button .webix_icon_btn:before {
   color: #fff;
 }
+
+.gray_col.webix_layout_line {
+  background-color: #eee;
+}
+
+.gray_col.webix_layout_line .webix_el_button .webixtype_base {
+  background: transparent;
+  color: #77899a;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.gray_col.webix_layout_line .webix_el_button .webixtype_base:hover {
+  color: #000;
+}
+
+.label_connect.webix_el_label div {
+  color: #27948a;
+  text-align: center;
+  position: relative;
+}
+
+.label_connect.webix_el_label div:before {
+  content: '\2714';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  
+  -webkit-transform: translateX(-50px);
+  -moz-transform: translateX(-50px);
+  -ms-transform: translateX(-50px);
+  -o-transform: translateX(-50px);
+  transform: translateX(-50px);
+}
+
+.custom_button_form.webix_el_button .webixtype_base {
+  background-color: #1ca1c1;
+  color: #fff;
+}
+
+.custom_button_form.webix_el_button .webixtype_base:hover {
+  background-color: #1890ad;
+  color: #fff;
+}

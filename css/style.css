@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.first_row {
+  background-color: #657584;
+}
+
+.custom-label-style.webix_el_label div {
+  color: #fff;
+  margin-left: 10px;
+}
+
+.transparent_button.webix_el_button .webix_img_btn {
+  background: transparent;
+  color: #fff;
+}
+
+.transparent_button.webix_el_button .webix_icon_btn:before {
+  color: #fff;
+}

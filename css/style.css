@@ -65,3 +65,8 @@
   background-color: #1890ad;
   color: #fff;
 }
+
+.text_align_center.webix_el_label {
+  text-align: center;
+  color: #77899a;
+}

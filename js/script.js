@@ -85,8 +85,9 @@ webix.ready(function () {
   };
 
   const thirdRow = {
-    template: 'row-3',
-    height: 40,
+    view: 'label',
+    label: 'The software is provided by <a href="https://webix.com" target=”_blank”>https://webix.com.</a> All rights reserved (c)',
+    css: 'text_align_center',
   };
 
   webix.ui({

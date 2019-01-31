@@ -92,6 +92,7 @@ webix.ready(function () {
                 value: 'Add new',
                 type: 'form',
                 click: function() {
+                  $$("addElements").validate();
                   const values = $$('addElements').getValues();
                   $$('film_list').add(values);
                 },
@@ -103,6 +104,18 @@ webix.ready(function () {
           },
           { view: 'spacer' },
         ],
+        rules: {
+          title: webix.rules.isNotEmpty,
+          year: function(value) {
+            return value >= 1970;
+          },
+          votes: function(value) {
+            return value < 100000;
+          },
+          rating: function(value) {
+            return value > 0;
+          }
+        },
       },
     ],
   };

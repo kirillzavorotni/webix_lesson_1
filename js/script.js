@@ -95,11 +95,26 @@ webix.ready(function () {
                   if ($$("addElements").validate()) {
                     const values = $$('addElements').getValues();
                     $$('film_list').add(values);
-                    webix.message({ text:'Data is correct' });
+                    webix.message({ text: 'Data is correct' });
                   }
                 },
               },
-              { view: 'button', value: 'Clear' },
+              {
+                view: 'button',
+                value: 'Clear',
+                click: function () {
+                  webix.confirm({
+                    id: 'confirmClear',
+                    text: "Are You shure?",
+                    callback: function (result) {
+                      if (result) {
+                        $$('addElements').clear();
+                        $$("addElements").clearValidation();
+                      }
+                    },
+                  });
+                },
+              },
             ],
             margin: 7,
             width: 280,

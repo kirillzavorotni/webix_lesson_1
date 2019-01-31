@@ -9,11 +9,12 @@ webix.ready(function () {
   ];
 
   const firstRow = {
+    view: 'toolbar',
+    css: 'webix_dark',
     cols: [
       {
         view: 'label',
         label: 'My App',
-        css: 'custom-label-style',
         width: 75,
       },
       { view: 'spacer' },
@@ -24,10 +25,8 @@ webix.ready(function () {
         id: 'profile',
         label: 'Profile',
         width: 90,
-        css: 'transparent_button',
       },
     ],
-    css: 'first_row',
     height: 40,
   };
 
@@ -35,16 +34,31 @@ webix.ready(function () {
     cols: [
       {
         rows: [
-          { view: 'button', id: 'dashboard', label: 'Dashboard' },
-          { view: 'button', id: 'users', label: 'Users' },
-          { view: 'button', id: 'product', label: 'Product' },
-          { view: 'button', id: 'locations', label: 'Locations' },
-          { view: 'spacer' },
-          { view: 'label', label: 'Connected', css: 'label_connect' },
+          {
+            view: 'list',
+            data: ['Dashboard', 'Users', 'Product', 'Locations'],
+            width: 180,
+            select: true,
+            margin: 5,
+            scroll: false,
+            css: {
+              'background-color': '#eee',
+              'border-bottom': 'none',
+              'background': 'transparent',
+            },
+          },
+          {
+            view: 'label',
+            label: '<span class="webix_icon mdi mdi-check"></span>Connected',
+            css: {
+              'color': 'green',
+              'text-align': 'center',
+            },
+          }
         ],
-        width: 180,
-        margin: 5,
-        css: 'gray_col',
+        css: {
+          'background-color': '#eee',
+        }
       },
       { view: 'resizer' },
       {
@@ -72,7 +86,7 @@ webix.ready(function () {
           { view: 'text', label: 'Votes' },
           {
             cols: [
-              { view: 'button', value: 'Add new', css: 'custom_button_form' },
+              { view: 'button', value: 'Add new', type: 'form' },
               { view: 'button', value: 'Clear' },
             ],
             margin: 7,
@@ -87,7 +101,9 @@ webix.ready(function () {
   const thirdRow = {
     view: 'label',
     label: 'The software is provided by <a href="https://webix.com" target=”_blank”>https://webix.com.</a> All rights reserved (c)',
-    css: 'text_align_center',
+    css: {
+      'text-align': 'center',
+    },
   };
 
   webix.ui({

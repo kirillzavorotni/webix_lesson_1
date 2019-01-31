@@ -78,16 +78,24 @@ webix.ready(function () {
       },
       {
         view: 'form',
-        id: 'some_form',
+        id: 'addElements',
         elements: [
           { type: 'section', template: 'Edit films' },
-          { view: 'text', label: 'Title' },
-          { view: 'text', label: 'Year' },
-          { view: 'text', label: 'Rating' },
-          { view: 'text', label: 'Votes' },
+          { view: 'text', label: 'Title', name: 'title' },
+          { view: 'text', label: 'Year', name: 'year' },
+          { view: 'text', label: 'Rating', name: 'rating' },
+          { view: 'text', label: 'Votes', name: 'votes' },
           {
             cols: [
-              { view: 'button', value: 'Add new', type: 'form' },
+              {
+                view: 'button',
+                value: 'Add new',
+                type: 'form',
+                click: function() {
+                  const values = $$('addElements').getValues();
+                  $$('film_list').add(values);
+                },
+              },
               { view: 'button', value: 'Clear' },
             ],
             margin: 7,

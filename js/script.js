@@ -81,20 +81,22 @@ webix.ready(function () {
         id: 'addElements',
         elements: [
           { type: 'section', template: 'Edit films' },
-          { view: 'text', label: 'Title', name: 'title' },
-          { view: 'text', label: 'Year', name: 'year' },
-          { view: 'text', label: 'Rating', name: 'rating' },
-          { view: 'text', label: 'Votes', name: 'votes' },
+          { view: 'text', label: 'Title', name: 'title', invalidMessage: 'must be filled in' },
+          { view: 'text', label: 'Year', name: 'year', invalidMessage: 'between 1970 and current' },
+          { view: 'text', label: 'Rating', name: 'rating', invalidMessage: 'cannot be empty or 0' },
+          { view: 'text', label: 'Votes', name: 'votes', invalidMessage: 'must be less than 100000' },
           {
             cols: [
               {
                 view: 'button',
                 value: 'Add new',
                 type: 'form',
-                click: function() {
-                  $$("addElements").validate();
-                  const values = $$('addElements').getValues();
-                  $$('film_list').add(values);
+                click: function () {
+                  if ($$("addElements").validate()) {
+                    const values = $$('addElements').getValues();
+                    $$('film_list').add(values);
+                    webix.message({ text:'Data is correct' });
+                  }
                 },
               },
               { view: 'button', value: 'Clear' },
@@ -106,13 +108,13 @@ webix.ready(function () {
         ],
         rules: {
           title: webix.rules.isNotEmpty,
-          year: function(value) {
-            return value >= 1970;
+          year: function (value) {
+            return value >= 1970 && value <= new Date().getFullYear();
           },
-          votes: function(value) {
+          votes: function (value) {
             return value < 100000;
           },
-          rating: function(value) {
+          rating: function (value) {
             return value > 0;
           }
         },

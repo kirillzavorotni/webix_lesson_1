@@ -24,6 +24,7 @@ webix.ready(function () {
         icon: 'mdi mdi-account',
         id: 'profile',
         label: 'Profile',
+        popup: 'profilePopup',
         width: 90,
       },
     ],
@@ -90,7 +91,7 @@ webix.ready(function () {
               { view: 'button', value: 'Clear' },
             ],
             margin: 7,
-            width: 279,
+            width: 280,
           },
           { view: 'spacer' },
         ],
@@ -107,7 +108,21 @@ webix.ready(function () {
   };
 
   webix.ui({
+    view: 'popup',
+    id: 'profilePopup',
+    width: 280,
+    move: false,
+    body: {
+      view: 'list',
+      data: ['Settings', 'Log out'],
+      autoheight: true,
+      select: true,
+    },
+  });
+
+  webix.ui({
     view: 'layout',
+    id: 'myApp',
     rows: [
       firstRow,
       secondRow,

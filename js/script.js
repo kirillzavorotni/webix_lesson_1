@@ -149,7 +149,6 @@ webix.ready(function () {
     view: 'popup',
     id: 'profilePopup',
     width: 280,
-    move: false,
     body: {
       view: 'list',
       data: ['Settings', 'Log out'],

@@ -24,6 +24,7 @@ webix.ready(function () {
         icon: 'mdi mdi-account',
         id: 'profile',
         label: 'Profile',
+        popup: 'profilePopup',
         width: 90,
       },
     ],
@@ -77,23 +78,61 @@ webix.ready(function () {
       },
       {
         view: 'form',
-        id: 'some_form',
+        id: 'addElements',
         elements: [
           { type: 'section', template: 'Edit films' },
-          { view: 'text', label: 'Title' },
-          { view: 'text', label: 'Year' },
-          { view: 'text', label: 'Rating' },
-          { view: 'text', label: 'Votes' },
+          { view: 'text', label: 'Title', name: 'title', invalidMessage: 'must be filled in' },
+          { view: 'text', label: 'Year', name: 'year', invalidMessage: 'between 1970 and current' },
+          { view: 'text', label: 'Rating', name: 'rating', invalidMessage: 'cannot be empty or 0' },
+          { view: 'text', label: 'Votes', name: 'votes', invalidMessage: 'must be less than 100000' },
           {
             cols: [
-              { view: 'button', value: 'Add new', type: 'form' },
-              { view: 'button', value: 'Clear' },
+              {
+                view: 'button',
+                value: 'Add new',
+                type: 'form',
+                click: function () {
+                  if ($$("addElements").validate()) {
+                    const values = $$('addElements').getValues();
+                    $$('film_list').add(values);
+                    webix.message({ text: 'Data is correct' });
+                  }
+                },
+              },
+              {
+                view: 'button',
+                value: 'Clear',
+                click: function () {
+                  webix.confirm({
+                    id: 'confirmClear',
+                    text: "Are You shure?",
+                    callback: function (result) {
+                      if (result) {
+                        $$('addElements').clear();
+                        $$("addElements").clearValidation();
+                      }
+                    },
+                  });
+                },
+              },
             ],
             margin: 7,
-            width: 279,
+            width: 280,
           },
           { view: 'spacer' },
         ],
+        rules: {
+          title: webix.rules.isNotEmpty,
+          year: function (value) {
+            return value >= 1970 && value <= new Date().getFullYear();
+          },
+          votes: function (value) {
+            return value < 100000;
+          },
+          rating: function (value) {
+            return value > 0;
+          }
+        },
       },
     ],
   };
@@ -107,7 +146,21 @@ webix.ready(function () {
   };
 
   webix.ui({
+    view: 'popup',
+    id: 'profilePopup',
+    width: 280,
+    move: false,
+    body: {
+      view: 'list',
+      data: ['Settings', 'Log out'],
+      autoheight: true,
+      select: true,
+    },
+  });
+
+  webix.ui({
     view: 'layout',
+    id: 'myApp',
     rows: [
       firstRow,
       secondRow,

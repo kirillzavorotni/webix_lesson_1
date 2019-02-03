@@ -182,14 +182,25 @@ webix.ready(function () {
             url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
             template: '#name# from #country# <span class="closelement webix_icon wxi-close"></span>',
             onClick: {
-              'closelement': function(e, id){
+              'closelement': function (e, id) {
                 this.remove(id);
                 return false;
               },
             },
           },
+          {
+            view: 'chart',
+            type: 'bar',
+            value: '#age#',
+            url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
+            height: 300,
+            xAxis: {
+              title: "Age",
+              template: "#age#",
+              lines: true,
+            },
+          },
           { view: 'spacer' },
-          { template: 'row-2' },
         ],
         id: 'Users',
       },

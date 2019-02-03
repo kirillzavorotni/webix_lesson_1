@@ -180,6 +180,8 @@ webix.ready(function () {
             view: 'toolbar',
             elements: [
               { view: 'text', id: 'list_input' },
+              { view: 'button', type: 'form', label: 'Sort asc', width: 110, click: sort_asc, },
+              { view: 'button', type: 'form', label: 'Sort desc', width: 110, click: sort_desc, },
             ],
           },
           {
@@ -269,4 +271,12 @@ webix.ready(function () {
     const value = this.getValue().toLowerCase();
     $$('userList').filter('#name#', value);
   });
+
+  function sort_asc() {
+    $$('userList').sort('#age#', 'asc' );
+  }
+
+  function sort_desc() {
+    $$('userList').sort('#age#', 'desc' );
+  }
 });

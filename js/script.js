@@ -40,7 +40,7 @@ webix.ready(function () {
         view: 'list',
         data: ['Dashboard', 'Users', 'Product', 'Locations'],
         on: {
-          onAfterSelect: function (id) {
+          'onAfterSelect': function (id) {
             $$(id).show();
           }
         },
@@ -76,6 +76,7 @@ webix.ready(function () {
         cols: [
           {
             view: 'datatable',
+            editable: true,
             id: 'film_list',
             autoConfig: true,
             columns: [
@@ -86,7 +87,13 @@ webix.ready(function () {
               { id: 'rank', header: 'Rank' },
             ],
             select: 'row',
-            data: small_film_set,
+            url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
+            on: {
+              'onAfterSelect': function (selection) {
+                const elem = $$('film_list').getItem(selection.id);
+                $$('addElements').setValues(elem);
+              },
+            },
           },
           {
             view: 'form',
@@ -106,8 +113,12 @@ webix.ready(function () {
                     click: function () {
                       if ($$("addElements").validate()) {
                         const values = $$('addElements').getValues();
-                        $$('film_list').add(values);
-                        webix.message({ text: 'Data is correct' });
+                        if (values.id) {
+                          $$("film_list").updateItem(values.id, values);
+                        } else {
+                          $$('film_list').add(values);
+                          webix.message({ text: 'Data is correct' });
+                        }
                       }
                     },
                   },
@@ -139,9 +150,11 @@ webix.ready(function () {
                 return value >= 1970 && value <= new Date().getFullYear();
               },
               votes: function (value) {
+                value = parseFloat(value.replace(',','.'));
                 return value < 100000;
               },
               rating: function (value) {
+                value = parseFloat(value.replace(',','.'));
                 return value > 0;
               }
             },

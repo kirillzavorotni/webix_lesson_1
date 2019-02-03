@@ -1,3 +1,7 @@
 .rowhover {
   background-color: rgb(255, 224, 224);
 }
+
+.closelement {
+  float: right;
+}

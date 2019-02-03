@@ -81,9 +81,11 @@ webix.ready(function () {
             autoConfig: true,
             hover: 'rowhover',
             columns: [
-              { id: 'id', header: [{ text: '', }], width: 40, css: {
-                'background-color': 'rgb(244, 245, 249)',
-              }},
+              {
+                id: 'id', header: [{ text: '', }], width: 40, css: {
+                  'background-color': 'rgb(244, 245, 249)',
+                }
+              },
               { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true },
               { id: 'year', header: ['Year', { content: 'numberFilter' }] },
               { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }] },
@@ -172,9 +174,27 @@ webix.ready(function () {
           },
         ],
       },
-      { template: 'Users view', id: 'Users', },
-      { template: 'Products view', id: 'Product', },
-      { template: 'Admin view', id: 'Locations', },
+      {
+        rows: [
+          {
+            view: 'list',
+            height: 210,
+            url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
+            template: '#name# from #country# <span class="closelement webix_icon wxi-close"></span>',
+            onClick: {
+              'closelement': function(e, id){
+                this.remove(id);
+                return false;
+              },
+            },
+          },
+          { view: 'spacer' },
+          { template: 'row-2' },
+        ],
+        id: 'Users',
+      },
+      { template: 'Products view', id: 'Product' },
+      { template: 'Admin view', id: 'Locations' },
     ],
   };
 

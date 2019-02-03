@@ -177,7 +177,14 @@ webix.ready(function () {
       {
         rows: [
           {
+            view: 'toolbar',
+            elements: [
+              { view: 'text', id: 'list_input' },
+            ],
+          },
+          {
             view: 'list',
+            id: 'userList',
             height: 210,
             url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
             template: '#name# from #country# <span class="closelement webix_icon wxi-close"></span>',
@@ -257,4 +264,9 @@ webix.ready(function () {
     filter = filter.toString();
     return value.indexOf(filter) === 0;
   };
+
+  $$('list_input').attachEvent('onTimedKeyPress', function () {
+    const value = this.getValue().toLowerCase();
+    $$('userList').filter('#name#', value);
+  });
 });

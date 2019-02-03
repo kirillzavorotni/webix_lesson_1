@@ -190,7 +190,7 @@ webix.ready(function () {
             css: 'userlist_custom',
             height: 210,
             select: true,
-            // url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
+            multiselect: true,
             template: '#name# from #country# <span class="closelement webix_icon wxi-close"></span>',
             onClick: {
               'closelement': function (e, id) {
@@ -215,7 +215,17 @@ webix.ready(function () {
         ],
         id: 'Users',
       },
-      { template: 'Products view', id: 'Product' },
+      {
+        view: "treetable",
+        id: 'Product',
+        select: 'cell',
+
+        columns: [
+          { id: 'id', header: '', width: 40 },
+          { id: 'title', header: 'Title', template: '{common.treetable()} #title#', width: 350 },
+          { id: 'price', header: 'Price', fillspace: true, },
+        ],
+      },
       { template: 'Admin view', id: 'Locations' },
     ],
   };
@@ -274,15 +284,19 @@ webix.ready(function () {
     $$('userList').filter('#name#', value);
   });
 
-  $$('userlist').load('http://localhost/xb_software/study/lesson_1_practice/data/users.js', function(){
-    $$('userlist').select([1, 2, 3, 4, 5]);
+  $$('userlist').load('http://localhost/xb_software/study/lesson_1_practice/data/users.js', function () {
+    this.select([1, 2, 3, 4, 5]);
+  });
+
+  $$('Product').load('http://localhost/xb_software/study/lesson_1_practice/data/products.js', function() {
+    this.openAll();
   });
 
   function sort_asc() {
-    $$('userlist').sort('#age#', 'asc' );
+    $$('userlist').sort('#age#', 'asc');
   }
 
   function sort_desc() {
-    $$('userlist').sort('#age#', 'desc' );
+    $$('userlist').sort('#age#', 'desc');
   }
 });

@@ -79,7 +79,11 @@ webix.ready(function () {
             editable: true,
             id: 'film_list',
             autoConfig: true,
+            hover: 'rowhover',
             columns: [
+              { id: 'id', header: [{ text: '', }], width: 40, css: {
+                'background-color': 'rgb(244, 245, 249)',
+              }},
               { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true },
               { id: 'year', header: ['Year', { content: 'numberFilter' }] },
               { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }] },

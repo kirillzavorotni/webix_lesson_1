@@ -8,6 +8,7 @@ webix.ready(function () {
     { id: 6, title: "12 Angry Men", year: 1957, votes: 164558, rating: 8.9, rank: 6, category: "Western" },
   ];
 
+  // first row
   const firstRow = {
     view: 'toolbar',
     css: 'webix_dark',
@@ -30,113 +31,139 @@ webix.ready(function () {
     ],
     height: 40,
   };
+  // first row
 
-  const secondRow = {
-    cols: [
+  // second row
+  const leftList = {
+    rows: [
       {
-        rows: [
-          {
-            view: 'list',
-            data: ['Dashboard', 'Users', 'Product', 'Locations'],
-            width: 180,
-            select: true,
-            margin: 5,
-            scroll: false,
-            css: {
-              'background-color': '#eee',
-              'border-bottom': 'none',
-              'background': 'transparent',
-            },
-          },
-          {
-            view: 'label',
-            label: '<span class="webix_icon mdi mdi-check"></span>Connected',
-            css: {
-              'color': 'green',
-              'text-align': 'center',
-            },
-          }
-        ],
-        css: {
-          'background-color': '#eee',
-        }
-      },
-      { view: 'resizer' },
-      {
-        view: 'datatable',
-        id: 'film_list',
-        autoConfig: true,
-        columns: [
-          { id: 'title', header: 'Title', fillspace: true },
-          { id: 'year', header: 'Year' },
-          { id: 'votes', header: 'Votes' },
-          { id: 'rating', header: 'Rating' },
-          { id: 'rank', header: 'Rank' },
-        ],
-        select: 'row',
-        data: small_film_set,
-      },
-      {
-        view: 'form',
-        id: 'addElements',
-        elements: [
-          { type: 'section', template: 'Edit films' },
-          { view: 'text', label: 'Title', name: 'title', invalidMessage: 'must be filled in' },
-          { view: 'text', label: 'Year', name: 'year', invalidMessage: 'between 1970 and current' },
-          { view: 'text', label: 'Rating', name: 'rating', invalidMessage: 'cannot be empty or 0' },
-          { view: 'text', label: 'Votes', name: 'votes', invalidMessage: 'must be less than 100000' },
-          {
-            cols: [
-              {
-                view: 'button',
-                value: 'Add new',
-                type: 'form',
-                click: function () {
-                  if ($$("addElements").validate()) {
-                    const values = $$('addElements').getValues();
-                    $$('film_list').add(values);
-                    webix.message({ text: 'Data is correct' });
-                  }
-                },
-              },
-              {
-                view: 'button',
-                value: 'Clear',
-                click: function () {
-                  webix.confirm({
-                    id: 'confirmClear',
-                    text: "Are You shure?",
-                    callback: function (result) {
-                      if (result) {
-                        $$('addElements').clear();
-                        $$("addElements").clearValidation();
-                      }
-                    },
-                  });
-                },
-              },
-            ],
-            margin: 7,
-            width: 280,
-          },
-          { view: 'spacer' },
-        ],
-        rules: {
-          title: webix.rules.isNotEmpty,
-          year: function (value) {
-            return value >= 1970 && value <= new Date().getFullYear();
-          },
-          votes: function (value) {
-            return value < 100000;
-          },
-          rating: function (value) {
-            return value > 0;
+        view: 'list',
+        data: ['Dashboard', 'Users', 'Product', 'Locations'],
+        on: {
+          onAfterSelect: function (id) {
+            $$(id).show();
           }
         },
+        width: 180,
+        select: true,
+        margin: 5,
+        scroll: false,
+        css: {
+          'background-color': '#eee',
+          'border-bottom': 'none',
+          'background': 'transparent',
+        },
       },
+      {
+        view: 'label',
+        label: '<span class="webix_icon mdi mdi-check"></span>Connected',
+        css: {
+          'color': 'green',
+          'text-align': 'center',
+        },
+      }
+    ],
+    css: {
+      'background-color': '#eee',
+    }
+  };
+
+  const multiview = {
+    view: 'multiview',
+    cells: [
+      {
+        id: 'Dashboard',
+        cols: [
+          {
+            view: 'datatable',
+            id: 'film_list',
+            autoConfig: true,
+            columns: [
+              { id: 'title', header: 'Title', fillspace: true },
+              { id: 'year', header: 'Year' },
+              { id: 'votes', header: 'Votes' },
+              { id: 'rating', header: 'Rating' },
+              { id: 'rank', header: 'Rank' },
+            ],
+            select: 'row',
+            data: small_film_set,
+          },
+          {
+            view: 'form',
+            id: 'addElements',
+            elements: [
+              { type: 'section', template: 'Edit films' },
+              { view: 'text', label: 'Title', name: 'title', invalidMessage: 'must be filled in' },
+              { view: 'text', label: 'Year', name: 'year', invalidMessage: 'between 1970 and current' },
+              { view: 'text', label: 'Rating', name: 'rating', invalidMessage: 'cannot be empty or 0' },
+              { view: 'text', label: 'Votes', name: 'votes', invalidMessage: 'must be less than 100000' },
+              {
+                cols: [
+                  {
+                    view: 'button',
+                    value: 'Add new',
+                    type: 'form',
+                    click: function () {
+                      if ($$("addElements").validate()) {
+                        const values = $$('addElements').getValues();
+                        $$('film_list').add(values);
+                        webix.message({ text: 'Data is correct' });
+                      }
+                    },
+                  },
+                  {
+                    view: 'button',
+                    value: 'Clear',
+                    click: function () {
+                      webix.confirm({
+                        id: 'confirmClear',
+                        text: "Are You shure?",
+                        callback: function (result) {
+                          if (result) {
+                            $$('addElements').clear();
+                            $$("addElements").clearValidation();
+                          }
+                        },
+                      });
+                    },
+                  },
+                ],
+                margin: 7,
+                width: 280,
+              },
+              { view: 'spacer' },
+            ],
+            rules: {
+              title: webix.rules.isNotEmpty,
+              year: function (value) {
+                return value >= 1970 && value <= new Date().getFullYear();
+              },
+              votes: function (value) {
+                return value < 100000;
+              },
+              rating: function (value) {
+                return value > 0;
+              }
+            },
+          },
+        ],
+      },
+      { template: 'Users view', id: 'Users', },
+      { template: 'Products view', id: 'Product', },
+      { template: 'Admin view', id: 'Locations', },
     ],
   };
 
+  const secondRow = {
+    cols: [
+      leftList,
+      { view: 'resizer' },
+      multiview,
+    ],
+  };
+  // second row
+
+  // third row
   const thirdRow = {
     view: 'label',
     label: 'The software is provided by <a href="https://webix.com" target=”_blank”>https://webix.com.</a> All rights reserved (c)',
@@ -144,7 +171,9 @@ webix.ready(function () {
       'text-align': 'center',
     },
   };
+  // third row
 
+  // popup window
   webix.ui({
     view: 'popup',
     id: 'profilePopup',
@@ -157,6 +186,7 @@ webix.ready(function () {
     },
   });
 
+  // entry point
   webix.ui({
     view: 'layout',
     id: 'myApp',

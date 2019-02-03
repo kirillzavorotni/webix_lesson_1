@@ -80,11 +80,11 @@ webix.ready(function () {
             id: 'film_list',
             autoConfig: true,
             columns: [
-              { id: 'title', header: 'Title', fillspace: true },
-              { id: 'year', header: 'Year' },
-              { id: 'votes', header: 'Votes' },
-              { id: 'rating', header: 'Rating' },
-              { id: 'rank', header: 'Rank' },
+              { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true },
+              { id: 'year', header: ['Year', { content: 'numberFilter' }] },
+              { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }] },
+              { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }] },
+              { id: 'rank', header: ['Rank', { content: 'numberFilter' }] },
               { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
             ],
             select: 'row',
@@ -96,7 +96,7 @@ webix.ready(function () {
               },
             },
             onClick: {
-              'removeElement': function(e, id) {
+              'removeElement': function (e, id) {
                 this.remove(id);
                 return false;
               },
@@ -157,11 +157,11 @@ webix.ready(function () {
                 return value >= 1970 && value <= new Date().getFullYear();
               },
               votes: function (value) {
-                value = parseFloat(value.replace(',','.'));
+                value = parseFloat(value.replace(',', '.'));
                 return value < 100000;
               },
               rating: function (value) {
-                value = parseFloat(value.replace(',','.'));
+                value = parseFloat(value.replace(',', '.'));
                 return value > 0;
               }
             },
@@ -216,4 +216,10 @@ webix.ready(function () {
       thirdRow,
     ],
   });
+
+  function startCompare(value, filter) {
+    value = value.toString();
+    filter = filter.toString();
+    return value.indexOf(filter) === 0;
+  };
 });

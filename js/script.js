@@ -186,9 +186,11 @@ webix.ready(function () {
           },
           {
             view: 'list',
-            id: 'userList',
+            id: 'userlist',
+            css: 'userlist_custom',
             height: 210,
-            url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
+            select: true,
+            // url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
             template: '#name# from #country# <span class="closelement webix_icon wxi-close"></span>',
             onClick: {
               'closelement': function (e, id) {
@@ -272,11 +274,15 @@ webix.ready(function () {
     $$('userList').filter('#name#', value);
   });
 
+  $$('userlist').load('http://localhost/xb_software/study/lesson_1_practice/data/users.js', function(){
+    $$('userlist').select([1, 2, 3, 4, 5]);
+  });
+
   function sort_asc() {
-    $$('userList').sort('#age#', 'asc' );
+    $$('userlist').sort('#age#', 'asc' );
   }
 
   function sort_desc() {
-    $$('userList').sort('#age#', 'desc' );
+    $$('userlist').sort('#age#', 'desc' );
   }
 });

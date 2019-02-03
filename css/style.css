@@ -5,3 +5,7 @@
 .closelement {
   float: right;
 }
+
+.userlist_custom.webix_list .webix_selected {
+  background-color: rgb(130, 236, 153);
+}

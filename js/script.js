@@ -85,6 +85,7 @@ webix.ready(function () {
               { id: 'votes', header: 'Votes' },
               { id: 'rating', header: 'Rating' },
               { id: 'rank', header: 'Rank' },
+              { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
             ],
             select: 'row',
             url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
@@ -92,6 +93,12 @@ webix.ready(function () {
               'onAfterSelect': function (selection) {
                 const elem = $$('film_list').getItem(selection.id);
                 $$('addElements').setValues(elem);
+              },
+            },
+            onClick: {
+              'removeElement': function(e, id) {
+                this.remove(id);
+                return false;
               },
             },
           },

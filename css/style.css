@@ -1,0 +1,11 @@
+.rowhover {
+  background-color: rgb(255, 224, 224);
+}
+
+.closelement {
+  float: right;
+}
+
+.userlist_custom.webix_list .webix_selected {
+  background-color: rgb(130, 236, 153);
+}

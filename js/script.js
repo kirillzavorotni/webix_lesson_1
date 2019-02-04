@@ -84,13 +84,14 @@ webix.ready(function () {
               {
                 id: 'id', header: [{ text: '', }], width: 40, css: {
                   'background-color': 'rgb(244, 245, 249)',
-                }
+                },
+                sort: 'int',
               },
               { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true },
-              { id: 'year', header: ['Year', { content: 'numberFilter' }] },
-              { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }] },
-              { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }] },
-              { id: 'rank', header: ['Rank', { content: 'numberFilter' }] },
+              { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int' },
+              { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
+              { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string' },
+              { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
               { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
             ],
             select: 'row',
@@ -128,6 +129,7 @@ webix.ready(function () {
                         const values = $$('addElements').getValues();
                         if (values.id) {
                           $$("film_list").updateItem(values.id, values);
+                          webix.message({ text: 'Successful update' });
                         } else {
                           $$('film_list').add(values);
                           webix.message({ text: 'Data is correct' });

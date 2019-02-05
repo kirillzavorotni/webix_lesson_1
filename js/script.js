@@ -77,7 +77,7 @@ webix.ready(function () {
           {
             rows: [
               {
-                view: 'tabbar',
+                view: 'segmented',
                 id: 'datefilter',
                 options: [
                   { id: 1, value: "All" },
@@ -85,11 +85,11 @@ webix.ready(function () {
                   { id: 3, value: "Modern" },
                   { id: 4, value: "New" },
                 ],
-                // on: {
-                //   onChange: function () {
-                //     $$("film_list").filterByAll();
-                //   }
-                // }
+                on: {
+                  'onChange': function () {
+                    $$('film_list').filterByAll();
+                  }
+                }
               },
               {
                 view: 'datatable',
@@ -116,20 +116,14 @@ webix.ready(function () {
                   },
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
                   { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], },
-                  { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int', },
                   { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
                   { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
+                  { id: 'year', header: ['Year'], sort: 'int', },
                   { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
                 ],
                 select: 'row',
                 url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
-                // on: {
-                // 'onAfterSelect': function (selection) {
-                //   const elem = $$('film_list').getItem(selection.id);
-                //   $$('addElements').setValues(elem);
-                // },
-                // },
                 onClick: {
                   'removeElement': function (e, id) {
                     this.remove(id);
@@ -160,7 +154,6 @@ webix.ready(function () {
                       if (form.validate()) {
                         const values = $$('addElements').getValues();
                         if (values.id) {
-                          // $$("film_list").updateItem(values.id, values);
                           form.save();
                           webix.message({ text: 'Successful update' });
                         } else {
@@ -321,29 +314,6 @@ webix.ready(function () {
     $$('userList').filter('#name#', value);
   });
 
-  // $$('film_list').registerFilter(
-  //   $$('datefilter'),
-  //   {
-  //     columnId: 'year',
-  //     compare: function (value, filter, item) {
-  //       console.log(item);
-  //       if (filter == 1) {
-  //         return item.year > 2000;
-  //       } else {
-  //         return item.year <= 2000;
-  //       }
-  //     },
-  //   },
-  //   {
-  //     getValue: function (node) {
-  //       return node.getValue();
-  //     },
-  //     setValue: function (node, value) {
-  //       node.setValue(value);
-  //     }
-  //   }
-  // );
-
   $$('userlist').load('http://localhost/xb_software/study/lesson_1_practice/data/users.js', function () {
     this.select([1, 2, 3, 4, 5]);
   });
@@ -359,4 +329,30 @@ webix.ready(function () {
   function sort_desc() {
     $$('userlist').sort('#age#', 'desc');
   }
+
+  $$('film_list').registerFilter(
+    $$('datefilter'),
+    {
+      columnId: 'year',
+      compare: function (value, filter, item) {
+        if (filter == 1) {
+          return true;
+        } else if (filter == 2){
+          return value <= 1980;
+        } else if (filter == 3){
+          return value < 2010 && value > 1980;
+        } else {
+          return value >= 2010;
+        }
+      },
+    },
+    {
+      getValue: function (node) {
+        return node.getValue();
+      },
+      setValue: function (node, value) {
+        node.setValue(value);
+      }
+    }
+  );
 });

@@ -75,50 +75,69 @@ webix.ready(function () {
         id: 'Dashboard',
         cols: [
           {
-            view: 'datatable',
-            editable: true,
-            id: 'film_list',
-            autoConfig: true,
-            hover: 'rowhover',
-            form: 'addElements',
-            scheme: {
-              $init: function(obj) {
-                if (obj.id % 2) {
-                  obj.categoryId = 'Crime';
-                } else {
-                  obj.categoryId = 'Thriller';
-                }
-              },
-            },
-            columns: [
+            rows: [
               {
-                id: 'id', header: [{ text: '', }], width: 40, css: {
-                  'background-color': 'rgb(244, 245, 249)',
+                view: 'tabbar',
+                id: 'datefilter',
+                options: [
+                  { id: 1, value: "All" },
+                  { id: 2, value: "Old" },
+                  { id: 3, value: "Modern" },
+                  { id: 4, value: "New" },
+                ],
+                // on: {
+                //   onChange: function () {
+                //     $$("film_list").filterByAll();
+                //   }
+                // }
+              },
+              {
+                view: 'datatable',
+                editable: true,
+                id: 'film_list',
+                autoConfig: true,
+                hover: 'rowhover',
+                form: 'addElements',
+                scheme: {
+                  $init: function (obj) {
+                    if (obj.id % 2) {
+                      obj.categoryId = 'Crime';
+                    } else {
+                      obj.categoryId = 'Thriller';
+                    }
+                  },
                 },
-                sort: 'int',
+                columns: [
+                  {
+                    id: 'id', header: [{ text: '', }], width: 40, css: {
+                      'background-color': 'rgb(244, 245, 249)',
+                    },
+                    sort: 'int',
+                  },
+                  { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
+                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], },
+                  { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int', },
+                  { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
+                  { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
+                  { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
+                  { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
+                ],
+                select: 'row',
+                url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
+                // on: {
+                // 'onAfterSelect': function (selection) {
+                //   const elem = $$('film_list').getItem(selection.id);
+                //   $$('addElements').setValues(elem);
+                // },
+                // },
+                onClick: {
+                  'removeElement': function (e, id) {
+                    this.remove(id);
+                    return false;
+                  },
+                },
               },
-              { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
-              { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], },
-              { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int', },
-              { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
-              { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
-              { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
-              { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
-            ],
-            select: 'row',
-            url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
-            // on: {
-              // 'onAfterSelect': function (selection) {
-              //   const elem = $$('film_list').getItem(selection.id);
-              //   $$('addElements').setValues(elem);
-              // },
-            // },
-            onClick: {
-              'removeElement': function (e, id) {
-                this.remove(id);
-                return false;
-              },
-            },
+            ]
           },
           {
             view: 'form',
@@ -302,11 +321,34 @@ webix.ready(function () {
     $$('userList').filter('#name#', value);
   });
 
+  // $$('film_list').registerFilter(
+  //   $$('datefilter'),
+  //   {
+  //     columnId: 'year',
+  //     compare: function (value, filter, item) {
+  //       console.log(item);
+  //       if (filter == 1) {
+  //         return item.year > 2000;
+  //       } else {
+  //         return item.year <= 2000;
+  //       }
+  //     },
+  //   },
+  //   {
+  //     getValue: function (node) {
+  //       return node.getValue();
+  //     },
+  //     setValue: function (node, value) {
+  //       node.setValue(value);
+  //     }
+  //   }
+  // );
+
   $$('userlist').load('http://localhost/xb_software/study/lesson_1_practice/data/users.js', function () {
     this.select([1, 2, 3, 4, 5]);
   });
 
-  $$('Product').load('http://localhost/xb_software/study/lesson_1_practice/data/products.js', function() {
+  $$('Product').load('http://localhost/xb_software/study/lesson_1_practice/data/products.js', function () {
     this.openAll();
   });
 

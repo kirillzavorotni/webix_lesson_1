@@ -280,12 +280,21 @@ webix.ready(function () {
         view: "treetable",
         id: 'Product',
         select: 'cell',
-
+        editable: true,
         columns: [
           { id: 'id', header: '', width: 40 },
-          { id: 'title', header: 'Title', template: '{common.treetable()} #title#', width: 350 },
-          { id: 'price', header: 'Price', fillspace: true, },
+          { id: 'title', header: 'Title', template: '{common.treetable()} #title#', editor: "text", width: 350 },
+          { id: 'price', header: 'Price', fillspace: true, editor: "text" },
         ],
+        rules: {
+          title: webix.rules.isNotEmpty,
+          price: function(value) {
+            if (!value || value == 0) {
+              return false;
+            }
+            return true;
+          },
+        },
       },
       { template: 'Admin view', id: 'Locations' },
     ],

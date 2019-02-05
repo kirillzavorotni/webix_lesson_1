@@ -76,11 +76,20 @@ webix.ready(function () {
         cols: [
           {
             view: 'datatable',
-            // editable: true,
+            editable: true,
             id: 'film_list',
             autoConfig: true,
             hover: 'rowhover',
             form: 'addElements',
+            scheme: {
+              $init: function(obj) {
+                if (obj.id % 2) {
+                  obj.categoryId = 'Crime';
+                } else {
+                  obj.categoryId = 'Thriller';
+                }
+              },
+            },
             columns: [
               {
                 id: 'id', header: [{ text: '', }], width: 40, css: {
@@ -89,19 +98,20 @@ webix.ready(function () {
                 sort: 'int',
               },
               { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
+              { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], },
               { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int', },
               { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
-              { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string' },
+              { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
               { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
               { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
             ],
             select: 'row',
             url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
             // on: {
-            //   'onAfterSelect': function (selection) {
-            //     const elem = $$('film_list').getItem(selection.id);
-            //     $$('addElements').setValues(elem);
-            //   },
+              // 'onAfterSelect': function (selection) {
+              //   const elem = $$('film_list').getItem(selection.id);
+              //   $$('addElements').setValues(elem);
+              // },
             // },
             onClick: {
               'removeElement': function (e, id) {

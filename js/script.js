@@ -101,9 +101,9 @@ webix.ready(function () {
                 scheme: {
                   $init: function (obj) {
                     if (obj.id % 2) {
-                      obj.categoryId = 'Crime';
+                      obj.categoryId = '3';
                     } else {
-                      obj.categoryId = 'Thriller';
+                      obj.categoryId = '4';
                     }
                   },
                 },
@@ -115,9 +115,9 @@ webix.ready(function () {
                     sort: 'int',
                   },
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
-                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], },
+                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js" },
                   { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
-                  { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
+                  { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', }, 
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
                   { id: 'year', header: ['Year'], sort: 'int', },
                   { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
@@ -337,9 +337,9 @@ webix.ready(function () {
       compare: function (value, filter, item) {
         if (filter == 1) {
           return true;
-        } else if (filter == 2){
+        } else if (filter == 2) {
           return value <= 1980;
-        } else if (filter == 3){
+        } else if (filter == 3) {
           return value < 2010 && value > 1980;
         } else {
           return value >= 2010;
@@ -355,4 +355,12 @@ webix.ready(function () {
       }
     }
   );
+
+  const categories = new webix.DataCollection({
+    url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
+  });
+
+  // https://docs.webix.com/desktop__nonui_objects.html
+  // option: collection, str
+  // https://snippet.webix.com/m6d1aziq
 });

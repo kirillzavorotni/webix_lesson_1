@@ -76,10 +76,11 @@ webix.ready(function () {
         cols: [
           {
             view: 'datatable',
-            editable: true,
+            // editable: true,
             id: 'film_list',
             autoConfig: true,
             hover: 'rowhover',
+            form: 'addElements',
             columns: [
               {
                 id: 'id', header: [{ text: '', }], width: 40, css: {
@@ -87,8 +88,8 @@ webix.ready(function () {
                 },
                 sort: 'int',
               },
-              { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true },
-              { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int' },
+              { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
+              { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int', },
               { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
               { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string' },
               { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
@@ -96,12 +97,12 @@ webix.ready(function () {
             ],
             select: 'row',
             url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
-            on: {
-              'onAfterSelect': function (selection) {
-                const elem = $$('film_list').getItem(selection.id);
-                $$('addElements').setValues(elem);
-              },
-            },
+            // on: {
+            //   'onAfterSelect': function (selection) {
+            //     const elem = $$('film_list').getItem(selection.id);
+            //     $$('addElements').setValues(elem);
+            //   },
+            // },
             onClick: {
               'removeElement': function (e, id) {
                 this.remove(id);
@@ -122,13 +123,16 @@ webix.ready(function () {
                 cols: [
                   {
                     view: 'button',
+                    id: 'add_item',
                     value: 'Add new',
                     type: 'form',
                     click: function () {
-                      if ($$("addElements").validate()) {
+                      const form = $$('addElements');
+                      if (form.validate()) {
                         const values = $$('addElements').getValues();
                         if (values.id) {
-                          $$("film_list").updateItem(values.id, values);
+                          // $$("film_list").updateItem(values.id, values);
+                          form.save();
                           webix.message({ text: 'Successful update' });
                         } else {
                           $$('film_list').add(values);
@@ -274,6 +278,8 @@ webix.ready(function () {
       thirdRow,
     ],
   });
+
+  $$('addElements').bind($$('film_list'));
 
   function startCompare(value, filter) {
     value = value.toString();

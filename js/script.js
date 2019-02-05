@@ -33,6 +33,10 @@ webix.ready(function () {
   };
   // first row
 
+  webix.protoUI({
+    name: "myuserlist",
+  }, webix.EditAbility, webix.ui.list);
+
   // second row
   const leftList = {
     rows: [
@@ -117,7 +121,7 @@ webix.ready(function () {
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
                   { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js" },
                   { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
-                  { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', }, 
+                  { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
                   { id: 'year', header: ['Year'], sort: 'int', },
                   { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
@@ -210,33 +214,62 @@ webix.ready(function () {
               { view: 'text', id: 'list_input' },
               { view: 'button', type: 'form', label: 'Sort asc', width: 110, click: sort_asc, },
               { view: 'button', type: 'form', label: 'Sort desc', width: 110, click: sort_desc, },
+              { view: 'button', type: 'form', label: 'Add new', width: 110,
+                click: function() {
+                  const names = ['Kirill Zavorotny', 'Olga Melichova', 'Andrew Braim', 'Vladimir Mucha'];
+                  const ages = [28, 32, 19, 25];
+                  const countries = ['Minsk', 'Mohilev', 'Orsha', 'Tumen'];
+                  const randomeValue = Math.floor(Math.random() * 4);
+                  const item = {
+                    name: names[randomeValue],
+                    age: ages[randomeValue],
+                    country: countries[randomeValue],
+                  };
+                  $$('userlist').add(item);
+                },
+              },
             ],
           },
           {
-            view: 'list',
+            view: 'myuserlist',
             id: 'userlist',
-            css: 'userlist_custom',
             height: 210,
-            select: true,
             multiselect: true,
+            editable: true,
+            editor: "text",
+            editValue: "name",
             template: '#name# from #country# <span class="closelement webix_icon wxi-close"></span>',
+            scheme: {
+              $init: function (obj) {
+                if (obj.age > 26) {
+                  obj.$css = 'style_for_age';
+                }
+              },
+            },
             onClick: {
               'closelement': function (e, id) {
                 this.remove(id);
                 return false;
               },
             },
+            rules: {
+              name: webix.rules.isNotEmpty,
+            },
           },
           {
             view: 'chart',
+            id: 'mychart',
             type: 'bar',
-            value: '#age#',
-            url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
+            value: '#count#',
             height: 300,
             xAxis: {
-              title: "Age",
-              template: "#age#",
+              template: "#country#",
               lines: true,
+            },
+            yAxis:{
+              start: 0,
+              step: 1,
+              end: 5,
             },
           },
           { view: 'spacer' },
@@ -356,11 +389,25 @@ webix.ready(function () {
     }
   );
 
-  const categories = new webix.DataCollection({
-    url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
-  });
+  $$("mychart").sync(
+    $$("userlist"),
+    function () {
+        this.group({
+        by:"country",
+        map:{
+          count: [ "country", "count" ],
+        }
+    });
+    }
+  );
+});
+
+
+// const categories = new webix.DataCollection({
+  //   url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
+  // });
 
   // https://docs.webix.com/desktop__nonui_objects.html
   // option: collection, str
   // https://snippet.webix.com/m6d1aziq
-});
+  

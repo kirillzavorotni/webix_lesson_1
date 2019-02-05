@@ -6,6 +6,6 @@
   float: right;
 }
 
-.userlist_custom.webix_list .webix_selected {
-  background-color: rgb(130, 236, 153);
+.style_for_age {
+  background-color: rgb(170, 163, 241);
 }

@@ -1,4 +1,8 @@
 webix.ready(function () {
+  const filmCategoriesCollection = new webix.DataCollection({
+    url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
+  });
+
   // first row
   const firstRow = {
     view: 'toolbar',
@@ -108,7 +112,7 @@ webix.ready(function () {
                     sort: 'int',
                   },
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
-                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: 'http://localhost/xb_software/study/lesson_1_practice/data/categories.js' },
+                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: filmCategoriesCollection  }, // 
                   { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'int' },
                   { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
@@ -296,7 +300,7 @@ webix.ready(function () {
             ],
             onClick: {
               'removeElement': function (e, id) {
-                this.remove(id);
+                filmCategoriesCollection.remove(id);
                 return false;
                 
               },
@@ -305,8 +309,8 @@ webix.ready(function () {
           {
             cols: [
               { view: 'button', label: 'Add new', type: 'form',
-                click: function(){
-                  $$('categoriesdtable').add({"value": "Some Categories"});
+                click: function(id){
+                  filmCategoriesCollection.add({"value": "Some Categories"});
                 },
               },
             ],
@@ -353,13 +357,16 @@ webix.ready(function () {
     name: "myuserlist",
   }, webix.EditAbility, webix.ui.list);
 
-  const filmCategoriesCollection = new webix.DataCollection({
-    url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
-  });
+  
 
-  const usersCollection = new webix.DataCollection({
-    url: "http://localhost/xb_software/study/lesson_1_practice/data/users.js",
-  });
+  // var usersCollection = new webix.DataCollection({
+  //   url: "http://localhost/xb_software/study/lesson_1_practice/data/users.js",
+  // });
+
+
+  
+  // $$("film_list").sync(filmCategoriesCollection);
+  // $$('addElements').bind($$('film_list'));
 
   // entry point
   webix.ui({
@@ -373,8 +380,7 @@ webix.ready(function () {
   });
 
   $$("categoriesdtable").sync(filmCategoriesCollection);
-
-  $$('addElements').bind($$('film_list'));
+  $$("film_list").sync(filmCategoriesCollection);
 
   function startCompare(value, filter) {
     value = value.toString();

@@ -88,7 +88,6 @@ webix.ready(function () {
                 id: 'film_list',
                 autoConfig: true,
                 hover: 'rowhover',
-                form: 'addElements',
                 scheme: {
                   $init: function (obj) {
                     if (obj.id % 2) {
@@ -109,7 +108,7 @@ webix.ready(function () {
                     sort: 'int',
                   },
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
-                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js" },
+                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: 'http://localhost/xb_software/study/lesson_1_practice/data/categories.js' },
                   { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'int' },
                   { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
@@ -151,7 +150,7 @@ webix.ready(function () {
                           form.save();
                           webix.message({ text: 'Successful update' });
                         } else {
-                          $$('film_list').add(values);
+                          form.save();
                           webix.message({ text: 'Data is correct' });
                         }
                       }
@@ -325,6 +324,10 @@ webix.ready(function () {
     name: "myuserlist",
   }, webix.EditAbility, webix.ui.list);
 
+  // const filmCategoriesCollection = new webix.DataCollection({
+  //   url: "http://localhost/xb_software/study/lesson_1_practice/data/data.js",
+  // });
+
   // entry point
   webix.ui({
     view: 'layout',
@@ -335,6 +338,8 @@ webix.ready(function () {
       thirdRow,
     ],
   });
+
+  // $$("film_list").sync(filmCategoriesCollection);
 
   $$('addElements').bind($$('film_list'));
 
@@ -404,11 +409,8 @@ webix.ready(function () {
   );
 });
 
-
-// const categories = new webix.DataCollection({
-  //   url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
-  // });
-
   // https://docs.webix.com/desktop__nonui_objects.html
   // option: collection, str
   // https://snippet.webix.com/m6d1aziq
+
+  // console.log(123);

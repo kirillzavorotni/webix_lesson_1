@@ -1,13 +1,4 @@
 webix.ready(function () {
-  const small_film_set = [
-    { id: 1, title: "The Shawshank Redemption", year: 1994, votes: 678790, rating: 9.2, rank: 1, category: "Thriller" },
-    { id: 2, title: "The Godfather", year: 1972, votes: 511495, rating: 9.2, rank: 2, category: "Crime" },
-    { id: 3, title: "The Godfather: Part II", year: 1974, votes: 319352, rating: 9.0, rank: 3, category: "Crime" },
-    { id: 4, title: "The Good, the Bad and the Ugly", year: 1966, votes: 213030, rating: 8.9, rank: 4, category: "Western" },
-    { id: 5, title: "Pulp fiction", year: 1994, votes: 533848, rating: 8.9, rank: 5, category: "Crime" },
-    { id: 6, title: "12 Angry Men", year: 1957, votes: 164558, rating: 8.9, rank: 6, category: "Western" },
-  ];
-
   // first row
   const firstRow = {
     view: 'toolbar',
@@ -33,16 +24,12 @@ webix.ready(function () {
   };
   // first row
 
-  webix.protoUI({
-    name: "myuserlist",
-  }, webix.EditAbility, webix.ui.list);
-
   // second row
   const leftList = {
     rows: [
       {
         view: 'list',
-        data: ['Dashboard', 'Users', 'Product', 'Locations'],
+        data: ['Dashboard', 'Users', 'Product', 'Admin'],
         on: {
           'onAfterSelect': function (id) {
             $$(id).show();
@@ -81,7 +68,7 @@ webix.ready(function () {
           {
             rows: [
               {
-                view: 'segmented',
+                view: 'tabbar',
                 id: 'datefilter',
                 options: [
                   { id: 1, value: "All" },
@@ -101,7 +88,6 @@ webix.ready(function () {
                 id: 'film_list',
                 autoConfig: true,
                 hover: 'rowhover',
-                form: 'addElements',
                 scheme: {
                   $init: function (obj) {
                     if (obj.id % 2) {
@@ -109,6 +95,9 @@ webix.ready(function () {
                     } else {
                       obj.categoryId = '4';
                     }
+
+                    obj.rating = parseFloat(obj.rating.replace(',', '.'));
+                    obj.votes = parseFloat(obj.votes.replace(',', '.'));
                   },
                 },
                 columns: [
@@ -119,8 +108,8 @@ webix.ready(function () {
                     sort: 'int',
                   },
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
-                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js" },
-                  { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
+                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: 'http://localhost/xb_software/study/lesson_1_practice/data/categories.js' },
+                  { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'int' },
                   { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
                   { id: 'year', header: ['Year'], sort: 'int', },
@@ -161,7 +150,7 @@ webix.ready(function () {
                           form.save();
                           webix.message({ text: 'Successful update' });
                         } else {
-                          $$('film_list').add(values);
+                          form.save();
                           webix.message({ text: 'Data is correct' });
                         }
                       }
@@ -195,11 +184,9 @@ webix.ready(function () {
                 return value >= 1970 && value <= new Date().getFullYear();
               },
               votes: function (value) {
-                value = parseFloat(value.replace(',', '.'));
                 return value < 100000;
               },
               rating: function (value) {
-                value = parseFloat(value.replace(',', '.'));
                 return value > 0;
               }
             },
@@ -214,8 +201,9 @@ webix.ready(function () {
               { view: 'text', id: 'list_input' },
               { view: 'button', type: 'form', label: 'Sort asc', width: 110, click: sort_asc, },
               { view: 'button', type: 'form', label: 'Sort desc', width: 110, click: sort_desc, },
-              { view: 'button', type: 'form', label: 'Add new', width: 110,
-                click: function() {
+              {
+                view: 'button', type: 'form', label: 'Add new', width: 110,
+                click: function () {
                   const names = ['Kirill Zavorotny', 'Olga Melichova', 'Andrew Braim', 'Vladimir Mucha'];
                   const ages = [28, 32, 19, 25];
                   const countries = ['Minsk', 'Mohilev', 'Orsha', 'Tumen'];
@@ -266,7 +254,7 @@ webix.ready(function () {
               template: "#country#",
               lines: true,
             },
-            yAxis:{
+            yAxis: {
               start: 0,
               step: 1,
               end: 5,
@@ -288,7 +276,7 @@ webix.ready(function () {
         ],
         rules: {
           title: webix.rules.isNotEmpty,
-          price: function(value) {
+          price: function (value) {
             if (!value || value == 0) {
               return false;
             }
@@ -296,7 +284,36 @@ webix.ready(function () {
           },
         },
       },
-      { template: 'Admin view', id: 'Locations' },
+      {
+        rows: [
+          {
+            view: 'datatable',
+            editable: true,
+            id: 'categoriesdtable',
+            columns: [
+              { id: 'value', header: 'Categories', fillspace: true, editor: 'text' },
+              { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
+            ],
+            onClick: {
+              'removeElement': function (e, id) {
+                this.remove(id);
+                return false;
+                
+              },
+            },
+          },
+          {
+            cols: [
+              { view: 'button', label: 'Add new', type: 'form',
+                click: function(){
+                  $$('categoriesdtable').add({"value": "Some Categories"});
+                },
+              },
+            ],
+          },
+        ],
+        id: 'Admin',
+      },
     ],
   };
 
@@ -332,6 +349,18 @@ webix.ready(function () {
     },
   });
 
+  webix.protoUI({
+    name: "myuserlist",
+  }, webix.EditAbility, webix.ui.list);
+
+  const filmCategoriesCollection = new webix.DataCollection({
+    url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
+  });
+
+  const usersCollection = new webix.DataCollection({
+    url: "http://localhost/xb_software/study/lesson_1_practice/data/users.js",
+  });
+
   // entry point
   webix.ui({
     view: 'layout',
@@ -342,6 +371,8 @@ webix.ready(function () {
       thirdRow,
     ],
   });
+
+  $$("categoriesdtable").sync(filmCategoriesCollection);
 
   $$('addElements').bind($$('film_list'));
 
@@ -401,22 +432,18 @@ webix.ready(function () {
   $$("mychart").sync(
     $$("userlist"),
     function () {
-        this.group({
-        by:"country",
-        map:{
-          count: [ "country", "count" ],
+      this.group({
+        by: "country",
+        map: {
+          count: ["country", "count"],
         }
-    });
+      });
     }
   );
 });
 
-
-// const categories = new webix.DataCollection({
-  //   url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
-  // });
-
   // https://docs.webix.com/desktop__nonui_objects.html
   // option: collection, str
   // https://snippet.webix.com/m6d1aziq
-  
+
+  // console.log(123);

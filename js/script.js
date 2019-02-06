@@ -3,6 +3,10 @@ webix.ready(function () {
     url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
   });
 
+  const usersCollection = new webix.DataCollection({
+    url: "http://localhost/xb_software/study/lesson_1_practice/data/users.js",
+  });
+
   // first row
   const firstRow = {
     view: 'toolbar',
@@ -112,7 +116,7 @@ webix.ready(function () {
                     sort: 'int',
                   },
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
-                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: filmCategoriesCollection  }, // 
+                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: filmCategoriesCollection },
                   { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'int' },
                   { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
@@ -139,6 +143,7 @@ webix.ready(function () {
               { view: 'text', label: 'Year', name: 'year', invalidMessage: 'between 1970 and current' },
               { view: 'text', label: 'Rating', name: 'rating', invalidMessage: 'cannot be empty or 0' },
               { view: 'text', label: 'Votes', name: 'votes', invalidMessage: 'must be less than 100000' },
+              { view: 'richselect', name: 'categoryId', label: "Categories", options: filmCategoriesCollection },
               {
                 cols: [
                   {
@@ -302,15 +307,16 @@ webix.ready(function () {
               'removeElement': function (e, id) {
                 filmCategoriesCollection.remove(id);
                 return false;
-                
+
               },
             },
           },
           {
             cols: [
-              { view: 'button', label: 'Add new', type: 'form',
-                click: function(id){
-                  filmCategoriesCollection.add({"value": "Some Categories"});
+              {
+                view: 'button', label: 'Add new', type: 'form',
+                click: function (id) {
+                  filmCategoriesCollection.add({ "value": "Some Categories" });
                 },
               },
             ],
@@ -357,17 +363,6 @@ webix.ready(function () {
     name: "myuserlist",
   }, webix.EditAbility, webix.ui.list);
 
-  
-
-  // var usersCollection = new webix.DataCollection({
-  //   url: "http://localhost/xb_software/study/lesson_1_practice/data/users.js",
-  // });
-
-
-  
-  // $$("film_list").sync(filmCategoriesCollection);
-  // $$('addElements').bind($$('film_list'));
-
   // entry point
   webix.ui({
     view: 'layout',
@@ -380,7 +375,11 @@ webix.ready(function () {
   });
 
   $$("categoriesdtable").sync(filmCategoriesCollection);
-  $$("film_list").sync(filmCategoriesCollection);
+  $$("userlist").sync(usersCollection);
+  $$("mychart").sync(usersCollection);
+  
+
+  $$('addElements').bind($$('film_list'));
 
   function startCompare(value, filter) {
     value = value.toString();
@@ -391,10 +390,6 @@ webix.ready(function () {
   $$('list_input').attachEvent('onTimedKeyPress', function () {
     const value = this.getValue().toLowerCase();
     $$('userList').filter('#name#', value);
-  });
-
-  $$('userlist').load('http://localhost/xb_software/study/lesson_1_practice/data/users.js', function () {
-    this.select([1, 2, 3, 4, 5]);
   });
 
   $$('Product').load('http://localhost/xb_software/study/lesson_1_practice/data/products.js', function () {
@@ -447,9 +442,3 @@ webix.ready(function () {
     }
   );
 });
-
-  // https://docs.webix.com/desktop__nonui_objects.html
-  // option: collection, str
-  // https://snippet.webix.com/m6d1aziq
-
-  // console.log(123);

@@ -1,13 +1,4 @@
 webix.ready(function () {
-  const small_film_set = [
-    { id: 1, title: "The Shawshank Redemption", year: 1994, votes: 678790, rating: 9.2, rank: 1, category: "Thriller" },
-    { id: 2, title: "The Godfather", year: 1972, votes: 511495, rating: 9.2, rank: 2, category: "Crime" },
-    { id: 3, title: "The Godfather: Part II", year: 1974, votes: 319352, rating: 9.0, rank: 3, category: "Crime" },
-    { id: 4, title: "The Good, the Bad and the Ugly", year: 1966, votes: 213030, rating: 8.9, rank: 4, category: "Western" },
-    { id: 5, title: "Pulp fiction", year: 1994, votes: 533848, rating: 8.9, rank: 5, category: "Crime" },
-    { id: 6, title: "12 Angry Men", year: 1957, votes: 164558, rating: 8.9, rank: 6, category: "Western" },
-  ];
-
   // first row
   const firstRow = {
     view: 'toolbar',
@@ -32,10 +23,6 @@ webix.ready(function () {
     height: 40,
   };
   // first row
-
-  webix.protoUI({
-    name: "myuserlist",
-  }, webix.EditAbility, webix.ui.list);
 
   // second row
   const leftList = {
@@ -81,7 +68,7 @@ webix.ready(function () {
           {
             rows: [
               {
-                view: 'segmented',
+                view: 'tabbar',
                 id: 'datefilter',
                 options: [
                   { id: 1, value: "All" },
@@ -109,6 +96,9 @@ webix.ready(function () {
                     } else {
                       obj.categoryId = '4';
                     }
+
+                    obj.rating = parseFloat(obj.rating.replace(',', '.'));
+                    obj.votes = parseFloat(obj.votes.replace(',', '.'));
                   },
                 },
                 columns: [
@@ -120,7 +110,7 @@ webix.ready(function () {
                   },
                   { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
                   { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js" },
-                  { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
+                  { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'int' },
                   { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
                   { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
                   { id: 'year', header: ['Year'], sort: 'int', },
@@ -195,11 +185,9 @@ webix.ready(function () {
                 return value >= 1970 && value <= new Date().getFullYear();
               },
               votes: function (value) {
-                value = parseFloat(value.replace(',', '.'));
                 return value < 100000;
               },
               rating: function (value) {
-                value = parseFloat(value.replace(',', '.'));
                 return value > 0;
               }
             },
@@ -214,8 +202,9 @@ webix.ready(function () {
               { view: 'text', id: 'list_input' },
               { view: 'button', type: 'form', label: 'Sort asc', width: 110, click: sort_asc, },
               { view: 'button', type: 'form', label: 'Sort desc', width: 110, click: sort_desc, },
-              { view: 'button', type: 'form', label: 'Add new', width: 110,
-                click: function() {
+              {
+                view: 'button', type: 'form', label: 'Add new', width: 110,
+                click: function () {
                   const names = ['Kirill Zavorotny', 'Olga Melichova', 'Andrew Braim', 'Vladimir Mucha'];
                   const ages = [28, 32, 19, 25];
                   const countries = ['Minsk', 'Mohilev', 'Orsha', 'Tumen'];
@@ -266,7 +255,7 @@ webix.ready(function () {
               template: "#country#",
               lines: true,
             },
-            yAxis:{
+            yAxis: {
               start: 0,
               step: 1,
               end: 5,
@@ -288,7 +277,7 @@ webix.ready(function () {
         ],
         rules: {
           title: webix.rules.isNotEmpty,
-          price: function(value) {
+          price: function (value) {
             if (!value || value == 0) {
               return false;
             }
@@ -331,6 +320,10 @@ webix.ready(function () {
       select: true,
     },
   });
+
+  webix.protoUI({
+    name: "myuserlist",
+  }, webix.EditAbility, webix.ui.list);
 
   // entry point
   webix.ui({
@@ -401,12 +394,12 @@ webix.ready(function () {
   $$("mychart").sync(
     $$("userlist"),
     function () {
-        this.group({
-        by:"country",
-        map:{
-          count: [ "country", "count" ],
+      this.group({
+        by: "country",
+        map: {
+          count: ["country", "count"],
         }
-    });
+      });
     }
   );
 });
@@ -419,4 +412,3 @@ webix.ready(function () {
   // https://docs.webix.com/desktop__nonui_objects.html
   // option: collection, str
   // https://snippet.webix.com/m6d1aziq
-  

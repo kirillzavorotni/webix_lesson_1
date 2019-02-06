@@ -33,6 +33,10 @@ webix.ready(function () {
   };
   // first row
 
+  webix.protoUI({
+    name: "myuserlist",
+  }, webix.EditAbility, webix.ui.list);
+
   // second row
   const leftList = {
     rows: [
@@ -75,39 +79,63 @@ webix.ready(function () {
         id: 'Dashboard',
         cols: [
           {
-            view: 'datatable',
-            editable: true,
-            id: 'film_list',
-            autoConfig: true,
-            hover: 'rowhover',
-            columns: [
+            rows: [
               {
-                id: 'id', header: [{ text: '', }], width: 40, css: {
-                  'background-color': 'rgb(244, 245, 249)',
+                view: 'segmented',
+                id: 'datefilter',
+                options: [
+                  { id: 1, value: "All" },
+                  { id: 2, value: "Old" },
+                  { id: 3, value: "Modern" },
+                  { id: 4, value: "New" },
+                ],
+                on: {
+                  'onChange': function () {
+                    $$('film_list').filterByAll();
+                  }
+                }
+              },
+              {
+                view: 'datatable',
+                editable: true,
+                id: 'film_list',
+                autoConfig: true,
+                hover: 'rowhover',
+                form: 'addElements',
+                scheme: {
+                  $init: function (obj) {
+                    if (obj.id % 2) {
+                      obj.categoryId = '3';
+                    } else {
+                      obj.categoryId = '4';
+                    }
+                  },
                 },
-                sort: 'int',
+                columns: [
+                  {
+                    id: 'id', header: [{ text: '', }], width: 40, css: {
+                      'background-color': 'rgb(244, 245, 249)',
+                    },
+                    sort: 'int',
+                  },
+                  { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true, },
+                  { id: 'categoryId', header: ['Category', { content: 'selectFilter' }], collection: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js" },
+                  { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
+                  { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string', },
+                  { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
+                  { id: 'year', header: ['Year'], sort: 'int', },
+                  { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
+                ],
+                select: 'row',
+                url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
+                onClick: {
+                  'removeElement': function (e, id) {
+                    this.remove(id);
+                    return false;
+                  },
+                },
               },
-              { id: 'title', header: ['Title', { content: 'textFilter' }], sort: 'string', fillspace: true },
-              { id: 'year', header: ['Year', { content: 'numberFilter' }], sort: 'int' },
-              { id: 'votes', header: ['Votes', { content: 'textFilter', compare: startCompare }], sort: 'string' },
-              { id: 'rating', header: ['Rating', { content: 'textFilter', compare: startCompare }], sort: 'string' },
-              { id: 'rank', header: ['Rank', { content: 'numberFilter' }], sort: 'int' },
-              { template: '<span class="removeElement webix_icon wxi-trash"></span>' },
-            ],
-            select: 'row',
-            url: 'http://localhost/xb_software/study/lesson_1_practice/data/data.js',
-            on: {
-              'onAfterSelect': function (selection) {
-                const elem = $$('film_list').getItem(selection.id);
-                $$('addElements').setValues(elem);
-              },
-            },
-            onClick: {
-              'removeElement': function (e, id) {
-                this.remove(id);
-                return false;
-              },
-            },
+            ]
           },
           {
             view: 'form',
@@ -122,13 +150,15 @@ webix.ready(function () {
                 cols: [
                   {
                     view: 'button',
+                    id: 'add_item',
                     value: 'Add new',
                     type: 'form',
                     click: function () {
-                      if ($$("addElements").validate()) {
+                      const form = $$('addElements');
+                      if (form.validate()) {
                         const values = $$('addElements').getValues();
                         if (values.id) {
-                          $$("film_list").updateItem(values.id, values);
+                          form.save();
                           webix.message({ text: 'Successful update' });
                         } else {
                           $$('film_list').add(values);
@@ -184,33 +214,62 @@ webix.ready(function () {
               { view: 'text', id: 'list_input' },
               { view: 'button', type: 'form', label: 'Sort asc', width: 110, click: sort_asc, },
               { view: 'button', type: 'form', label: 'Sort desc', width: 110, click: sort_desc, },
+              { view: 'button', type: 'form', label: 'Add new', width: 110,
+                click: function() {
+                  const names = ['Kirill Zavorotny', 'Olga Melichova', 'Andrew Braim', 'Vladimir Mucha'];
+                  const ages = [28, 32, 19, 25];
+                  const countries = ['Minsk', 'Mohilev', 'Orsha', 'Tumen'];
+                  const randomeValue = Math.floor(Math.random() * 4);
+                  const item = {
+                    name: names[randomeValue],
+                    age: ages[randomeValue],
+                    country: countries[randomeValue],
+                  };
+                  $$('userlist').add(item);
+                },
+              },
             ],
           },
           {
-            view: 'list',
+            view: 'myuserlist',
             id: 'userlist',
-            css: 'userlist_custom',
             height: 210,
-            select: true,
             multiselect: true,
+            editable: true,
+            editor: "text",
+            editValue: "name",
             template: '#name# from #country# <span class="closelement webix_icon wxi-close"></span>',
+            scheme: {
+              $init: function (obj) {
+                if (obj.age > 26) {
+                  obj.$css = 'style_for_age';
+                }
+              },
+            },
             onClick: {
               'closelement': function (e, id) {
                 this.remove(id);
                 return false;
               },
             },
+            rules: {
+              name: webix.rules.isNotEmpty,
+            },
           },
           {
             view: 'chart',
+            id: 'mychart',
             type: 'bar',
-            value: '#age#',
-            url: 'http://localhost/xb_software/study/lesson_1_practice/data/users.js',
+            value: '#count#',
             height: 300,
             xAxis: {
-              title: "Age",
-              template: "#age#",
+              template: "#country#",
               lines: true,
+            },
+            yAxis:{
+              start: 0,
+              step: 1,
+              end: 5,
             },
           },
           { view: 'spacer' },
@@ -221,12 +280,21 @@ webix.ready(function () {
         view: "treetable",
         id: 'Product',
         select: 'cell',
-
+        editable: true,
         columns: [
           { id: 'id', header: '', width: 40 },
-          { id: 'title', header: 'Title', template: '{common.treetable()} #title#', width: 350 },
-          { id: 'price', header: 'Price', fillspace: true, },
+          { id: 'title', header: 'Title', template: '{common.treetable()} #title#', editor: "text", width: 350 },
+          { id: 'price', header: 'Price', fillspace: true, editor: "text" },
         ],
+        rules: {
+          title: webix.rules.isNotEmpty,
+          price: function(value) {
+            if (!value || value == 0) {
+              return false;
+            }
+            return true;
+          },
+        },
       },
       { template: 'Admin view', id: 'Locations' },
     ],
@@ -275,6 +343,8 @@ webix.ready(function () {
     ],
   });
 
+  $$('addElements').bind($$('film_list'));
+
   function startCompare(value, filter) {
     value = value.toString();
     filter = filter.toString();
@@ -290,7 +360,7 @@ webix.ready(function () {
     this.select([1, 2, 3, 4, 5]);
   });
 
-  $$('Product').load('http://localhost/xb_software/study/lesson_1_practice/data/products.js', function() {
+  $$('Product').load('http://localhost/xb_software/study/lesson_1_practice/data/products.js', function () {
     this.openAll();
   });
 
@@ -301,4 +371,52 @@ webix.ready(function () {
   function sort_desc() {
     $$('userlist').sort('#age#', 'desc');
   }
+
+  $$('film_list').registerFilter(
+    $$('datefilter'),
+    {
+      columnId: 'year',
+      compare: function (value, filter, item) {
+        if (filter == 1) {
+          return true;
+        } else if (filter == 2) {
+          return value <= 1980;
+        } else if (filter == 3) {
+          return value < 2010 && value > 1980;
+        } else {
+          return value >= 2010;
+        }
+      },
+    },
+    {
+      getValue: function (node) {
+        return node.getValue();
+      },
+      setValue: function (node, value) {
+        node.setValue(value);
+      }
+    }
+  );
+
+  $$("mychart").sync(
+    $$("userlist"),
+    function () {
+        this.group({
+        by:"country",
+        map:{
+          count: [ "country", "count" ],
+        }
+    });
+    }
+  );
 });
+
+
+// const categories = new webix.DataCollection({
+  //   url: "http://localhost/xb_software/study/lesson_1_practice/data/categories.js",
+  // });
+
+  // https://docs.webix.com/desktop__nonui_objects.html
+  // option: collection, str
+  // https://snippet.webix.com/m6d1aziq
+  
